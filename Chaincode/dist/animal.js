@@ -46,7 +46,7 @@ __decorate([
 ], Animal.prototype, "type", void 0);
 __decorate([
     fabric_contract_api_1.Property(),
-    __metadata("design:type", Boolean)
+    __metadata("design:type", String)
 ], Animal.prototype, "pedigree", void 0);
 Animal = __decorate([
     fabric_contract_api_1.Object()

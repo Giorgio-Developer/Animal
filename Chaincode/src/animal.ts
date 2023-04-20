@@ -29,5 +29,5 @@ export class Animal {
     public type: string;
 
     @Property()
-    public pedigree: boolean;
+    public pedigree: string;
 }

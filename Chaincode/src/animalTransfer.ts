@@ -15,9 +15,9 @@ export class AnimalTransferContract extends Contract {
         const animals: Animal[] = [];
     }
 
-    // CreateAsset issues a new asset to the world state with given details.
+    // CreateAnimal issues a new Animal to the world state with given details.
     @Transaction()
-    public async CreateAnimal(ctx: Context, id: string, name: string, breed: string, birthDate: string, imgUrl: string, description: string, type: string, pedigree: boolean): Promise<void> {
+    public async CreateAnimal(ctx: Context, id: string, name: string, breed: string, birthDate: string, imgUrl: string, description: string, type: string, pedigree: string): Promise<void> {
         const exists = await this.AnimalExists(ctx, id);
         if (exists) {
             throw new Error(`The animal with id:  ${id} already exists`);
@@ -37,25 +37,25 @@ export class AnimalTransferContract extends Contract {
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(animal))));
     }
 
-    // ReadAsset returns the asset stored in the world state with given id.
+    // ReadAnimal returns the Animal stored in the world state with given id.
     @Transaction(false)
     public async ReadAnimal(ctx: Context, id: string): Promise<string> {
-        const animalJSON = await ctx.stub.getState(id); // get the asset from chaincode state
+        const animalJSON = await ctx.stub.getState(id); // get the Animal from chaincode state
         if (!animalJSON || animalJSON.length === 0) {
             throw new Error(`The animal with id:  ${id} already exists`);
         }
         return animalJSON.toString();
     }
 
-    // UpdateAsset updates an existing asset in the world state with provided parameters.
+    // UpdateAnimal updates an existing Animal in the world state with provided parameters.
     @Transaction()
     public async UpdateAnimalName(ctx: Context, id: string, name: string): Promise<void> {
         const exists = await this.AnimalExists(ctx, id);
         if (!exists) {
-            throw new Error(`The animal with id:  ${id} already exists`);
+            throw new Error(`The animal with id  ${id} doesn't exists`);
         }
 
-        // overwriting original asset with new asset
+        // overwriting original Animal with new Animal
         const updatedAnimalName = {
             ID: id,
             name: name
@@ -64,7 +64,115 @@ export class AnimalTransferContract extends Contract {
         return ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedAnimalName))));
     }
 
-    // AssetExists returns true when asset with given ID exists in world state.
+    // UpdateAnimal updates an existing Animal in the world state with provided parameters.
+    @Transaction()
+    public async UpdateAnimal(ctx: Context, id: string, name: string, breed: string, birthDate: string, imgUrl: string, description: string, type: string, pedigree: string): Promise<void> {
+        const exists = await this.AnimalExists(ctx, id);
+        if (!exists) {
+            throw new Error(`The Animal ${id} does not exist`);
+        }
+
+        // overwriting original Animal with new Animal
+        const updatedAnimal = {
+            ID: id,
+            name: name,
+            breed: breed,
+            birthDate: birthDate,
+            imgUrl: imgUrl,
+            description: description,
+            type: type,
+            pedigree: pedigree
+        };
+        // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
+        return ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedAnimal))));
+    }
+
+    // DeleteAnimal deletes an given Animal from the world state.
+    @Transaction()
+    public async DeleteAnimal(ctx: Context, id: string): Promise<void> {
+        const exists = await this.AnimalExists(ctx, id);
+        if (!exists) {
+            throw new Error(`The Animal ${id} does not exist`);
+        }
+        return ctx.stub.deleteState(id);
+    }
+
+	// TODO: Da testare e implementare lato AnimalContractService e lato back-end (pet-shop)
+    // GetAllAnimal returns all animal found in the world state.
+    @Transaction(false)
+    @Returns('string')
+    public async GetAllAnimal(ctx: Context): Promise<string> {
+        const allResults = [];
+        // range query with empty string for startKey and endKey does an open-ended query of all animal in the chaincode namespace.
+        const iterator = await ctx.stub.getStateByRange('', '');
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                console.log(err);
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
+
+/*
+	// This is JavaScript so without Funcation Decorators, all functions are assumed
+	// to be transaction functions
+	//
+	// For internal functions... prefix them with _
+	async _GetAllResults(iterator, isHistory) {
+		let allResults = [];
+		let res = await iterator.next();
+		while (!res.done) {
+			if (res.value && res.value.value.toString()) {
+				let jsonRes = {};
+				console.log(res.value.value.toString('utf8'));
+				if (isHistory && isHistory === true) {
+					jsonRes.TxId = res.value.txId;
+					jsonRes.Timestamp = res.value.timestamp;
+					try {
+						jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+					} catch (err) {
+						console.log(err);
+						jsonRes.Value = res.value.value.toString('utf8');
+					}
+				} else {
+					jsonRes.Key = res.value.key;
+					try {
+						jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+					} catch (err) {
+						console.log(err);
+						jsonRes.Record = res.value.value.toString('utf8');
+					}
+				}
+				allResults.push(jsonRes);
+			}
+			res = await iterator.next();
+		}
+		iterator.close();
+		return allResults;
+	}
+
+	// GetAnimalHistory returns the chain of custody for an Animal since issuance.
+	async GetAnimalHistory(ctx, AnimalName) {
+
+		let resultsIterator = await ctx.stub.getHistoryForKey(AnimalName);
+		let results = await this._GetAllResults(resultsIterator, true);
+
+		return JSON.stringify(results);
+	}
+*/
+
+
+
+
+    // AnimalExists returns true when Animal with given ID exists in world state.
     @Transaction(false)
     @Returns('boolean')
     public async AnimalExists(ctx: Context, id: string): Promise<boolean> {

@@ -6,5 +6,5 @@ export declare class Animal {
     imgUrl: string;
     description: string;
     type: string;
-    pedigree: boolean;
+    pedigree: string;
 }
