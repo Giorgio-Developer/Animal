@@ -121,17 +121,33 @@ export class AnimalTransferContract extends Contract {
         return JSON.stringify(allResults);
     }
 
-/*
+	
 	// This is JavaScript so without Funcation Decorators, all functions are assumed
 	// to be transaction functions
 	//
 	// For internal functions... prefix them with _
 	async _GetAllResults(iterator, isHistory) {
 		let allResults = [];
+
+		type jrType = {
+			TxId: string;
+			Timestamp: string;
+			Value: string;
+			Record: string;
+			Key: string;
+		  }
+		
+		let jsonRes: jrType = {
+			TxId: '',
+			Timestamp: '',
+			Value: '',
+			Record: '',
+			Key: ''
+		};
+
 		let res = await iterator.next();
 		while (!res.done) {
 			if (res.value && res.value.value.toString()) {
-				let jsonRes = {};
 				console.log(res.value.value.toString('utf8'));
 				if (isHistory && isHistory === true) {
 					jsonRes.TxId = res.value.txId;
@@ -159,17 +175,18 @@ export class AnimalTransferContract extends Contract {
 		return allResults;
 	}
 
+	@Transaction(false)
+    @Returns('string')
 	// GetAnimalHistory returns the chain of custody for an Animal since issuance.
-	async GetAnimalHistory(ctx, AnimalName) {
+	public async GetAnimalHistory(ctx: Context, AnimalID: string) {
 
-		let resultsIterator = await ctx.stub.getHistoryForKey(AnimalName);
+		console.info('- start getHistoryForAnimal: %s\n', AnimalID);
+
+		let resultsIterator = await ctx.stub.getHistoryForKey(AnimalID);
 		let results = await this._GetAllResults(resultsIterator, true);
 
 		return JSON.stringify(results);
 	}
-*/
-
-
 
 
     // AnimalExists returns true when Animal with given ID exists in world state.

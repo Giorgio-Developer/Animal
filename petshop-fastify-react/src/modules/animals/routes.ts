@@ -1,6 +1,6 @@
 import {deleteAnimalSchema, listAnimalsSchema} from './schema';
-import {getAnimalContractService} from "../common/ServiceFactory";
-import {Animal} from "./entity";
+import {getAnimalContractService} from '../common/ServiceFactory';
+import {Animal} from './entity';
 
 export default function animalHandler(server, options, next) {
 	server.get(
@@ -12,6 +12,18 @@ export default function animalHandler(server, options, next) {
 			res.send(animals);
 		}
 	);
+
+	server.get('/all', async (req, res) => {
+		req.log.info('get all animals from ledger');
+		const result = await getAnimalContractService().getAllAnimal();
+		res.send(result);
+	});
+
+	server.get('/history/:_name', async (req, res) => {
+		req.log.info('get history of a animal for a given name from ledger');
+		const result = await getAnimalContractService().getAnimalHistory(req.params._name);
+		res.send(result);
+	});
 
 	server.get('/:_id', async (req, res) => {
 		req.log.info('get one animals from db');
@@ -33,15 +45,7 @@ export default function animalHandler(server, options, next) {
 		const _id = req.params._id;
 
 		const animal = await server.db.animals.findOne(req.params._id);
-
-		const new_animal = animal;
-		new_animal.nome = req.body.nome;
-		new_animal.breed = req.body.breed;
-		new_animal.birthDate = req.body.birthDate;
-		new_animal.imgUrl = req.body.imgUrl;
-		new_animal.description = req.body.description;
-		new_animal.type = req.body.type;
-		new_animal.pedigree = req.body.pedigree;
+		const new_animal = {...req.body};
 
 		animal.transactionHash = await getAnimalContractService().updateAnimal(animal._id, new_animal);
 

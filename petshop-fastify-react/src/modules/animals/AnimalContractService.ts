@@ -51,6 +51,8 @@ export class AnimalContractService implements AnimalContractServiceInterface {
 		const contract = network.getContract(config.fabric.chaincode.name);
 		try {
 
+			console.log(animal);
+
 			const commit = await contract.submitAsync('UpdateAnimal',
 				{arguments: [id, animal.name, animal.breed, animal.birthDate.toString(), animal.imgUrl, animal.description, animal.type, String(animal.pedigree)]});
 			const resultJson = this.utf8Decoder.decode(commit.getResult());
@@ -63,37 +65,45 @@ export class AnimalContractService implements AnimalContractServiceInterface {
 	}
 
 	// TODO: Implement
-	async getAllAnimals(): Promise<string> {
-		throw new Error('Method not implemented.');
-		//const gateway = await this.blockchainService.connect();
-		//const network = gateway.getNetwork(config.fabric.channel.name);
-		//const contract = network.getContract(config.fabric.chaincode.name);
+	async getAllAnimal(): Promise<string> {
 
-	}
-	
-	/*
-	async GetAnimalHistory(name: string): Promise<string> {
 		const gateway = await this.blockchainService.connect();
 		const network = gateway.getNetwork(config.fabric.channel.name);
 		const contract = network.getContract(config.fabric.chaincode.name);
 		try {
 
-			const commit = await contract.submitAsync('GetAnimalHistory',
-				{arguments: [name]});
-			const resultJson = this.utf8Decoder.decode(commit.getResult());
+			const resultBytes = await contract.evaluateTransaction('GetAllAnimal');
+			const resultJson = this.utf8Decoder.decode(resultBytes);
 
-			return commit.getTransactionId();
+			return resultJson;
+
 		} catch (error) {
-			console.log("Error during the animal name update with message: ", error);
+			console.log('Error during get All Animal', error);
 			throw error;
 		}
 
 	}
-*/
 
-	async getAnimalHistory(name: string): Promise<string> {
-		throw new Error('Method not implemented.');
+	async getAnimalHistory(animal_id: string): Promise<string> {
+		const gateway = await this.blockchainService.connect();
+		const network = gateway.getNetwork(config.fabric.channel.name);
+		const contract = network.getContract(config.fabric.chaincode.name);
+		try {
+
+			console.log('\n--> Evaluate Transaction: GetAnimalHistory, get the history of an asset');
+			const result = await contract.evaluateTransaction('GetAnimalHistory', animal_id);
+
+			const resultJson = this.utf8Decoder.decode(result);
+
+			return resultJson;
+
+		} catch (error) {
+			console.log('Error during the get animal history: ', error);
+			throw error;
+		}
+
 	}
 
-
 }
+
+

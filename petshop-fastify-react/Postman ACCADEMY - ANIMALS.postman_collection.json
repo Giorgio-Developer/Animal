@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "68d73bb2-6907-47ca-b002-5eb2840763df",
+		"name": "ACCADEMY - ANIMALS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26609758"
+	},
+	"item": [
+		{
+			"name": "Create animal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"New Furia\",\n    \"type\": \"DOG\",\n    \"breed\": \"fdsfdsfsd\",\n    \"birthDate\": \"03/12/1992\",\n    \"imgUrl\": \"asoidjasidjsa\",\n    \"description\": \"sadsadasdas\",\n    \"pedigree\": false\n\n}\n\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/animal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"animal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Animal by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/animal/d08712b3-9e93-405d-9055-896b187eeb5b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"animal",
+						"d08712b3-9e93-405d-9055-896b187eeb5b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update animal name",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Secondo nome\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/animal/d08712b3-9e93-405d-9055-896b187eeb5b/name",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"animal",
+						"d08712b3-9e93-405d-9055-896b187eeb5b",
+						"name"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Animal",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"New Dog\",\r\n    \"type\": \"DOG\",\r\n    \"breed\": \"singer\",\r\n    \"birthDate\": \"03/12/1992\",\r\n    \"imgUrl\": \"\",\r\n    \"description\": \"ever\",\r\n    \"pedigree\": false\r\n\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/animal/0d32a27a-9d39-4c1e-8d53-b4862fe4173d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"animal",
+						"0d32a27a-9d39-4c1e-8d53-b4862fe4173d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Animal",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/animal/770841f2-f94c-475a-8d5f-b218be5b5667",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"animal",
+						"770841f2-f94c-475a-8d5f-b218be5b5667"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllAnimal",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GetAnimalHistory",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
